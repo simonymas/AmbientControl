@@ -177,16 +177,18 @@
                  
        //HUMIDITY MENU
        case 52:  HumSet = Adjust_mode(HumSet, x); break;
-       case 53:  HumHighLimit = HumHighLimit + x; break;
-       case 54:  HumLowLimit = HumLowLimit + x; break;                    
+       case 53:  HumHighLimit = HumHighLimit + (float)x; break;
+       case 54:  HumLowLimit = HumLowLimit + (float)x; break;                    
 
        //FAN MENU
        case 62:  FanSet = Adjust_mode(FanSet, x); break;
        case 63:  
+                 x *= 10;
                  FanDuration_minute = minute(Adjust_time_ms(FanDuration_minute, FanDuration_second, x));
                  FanDuration_second = second(Adjust_time_ms(FanDuration_minute, FanDuration_second, x));
                  break;
        case 64:  
+                 x *= 10;
                  FanInterval_minute = minute(Adjust_time_ms(FanInterval_minute, FanInterval_second, x));
                  FanInterval_second = second(Adjust_time_ms(FanInterval_minute, FanInterval_second, x));
                  break;
@@ -232,7 +234,7 @@
      tm.Day = 1;
      tm.Month = 1;
      tm.Year = 2020-1970;
-     AdjustedHourMinute_t = makeTime(tm) + AddedValue;
+     AdjustedHourMinute_t = makeTime(tm) + AddedValue*600;
      return AdjustedHourMinute_t;
     }
 
