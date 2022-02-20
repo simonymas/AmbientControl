@@ -121,10 +121,10 @@
     
   //  Activate debugging messages in serial screen - set to true to debug (Warning: if all is activated, dynamic memory will overload)
 
-      const bool SerialDebugSetup = false;
-      const bool SerialDebugDisplay = true;
-      const bool SerialDebugControls = true;
-      const bool SerialDebugStatus = false;
+      const bool SerialDebugSetup = true;
+      const bool SerialDebugDisplay = false;
+      const bool SerialDebugControls = false;
+      const bool SerialDebugStatus = true;   //Status of relays
       const bool SerialTempLog = true;
       const bool SerialHumLog =true;
       
@@ -146,13 +146,13 @@
       byte TempAdjust =                   2; //For area 3, duration is divided by this number
       
       #define HumSet_preset               0 // Values: 1 = Humidifier always on, 0 = Humidifier switched on automatically, 2 = Humidifier disabled
-      #define HumHighLimit_preset       100
+      #define HumHighLimit_preset        95
       #define HumLowLimit_preset         85
             
       #define FanSet_preset               0 // Values: 1 = Fan always on, 0 = Fan switched on automatically, 2 = Fan disabled
-      #define FanDuration_minute_preset  10
+      #define FanDuration_minute_preset   1
       #define FanDuration_second_preset   0
-      #define FanInterval_minute_preset  10
+      #define FanInterval_minute_preset   1
       #define FanInterval_second_preset   0
 
       #define LightSet_preset             0 // Values: 1 = Fan always on, 0 = Fan switched on automatically, 2 = Fan disabled
@@ -234,9 +234,9 @@
       byte ValueChanged = 0;
 
   //  Variables used in Check_status fucntions
-      byte TempStatus = 0; //Values: 
-      byte HumStatus = 0; //Values: 
-      byte FanStatus = 0; //Values: 0 = Off; 1 = On;
+      byte TempStatus = 0;  //Values: 0 = Off; 1 = On;
+      byte HumStatus = 0;   //Values: 0 = Off; 1 = On;
+      byte FanStatus = 0;   //Values: 0 = Off; 1 = On;
       byte LightStatus = 0; //Values: 0 = Off; 1 = On;
       
   //  For temperature and humidity sensor

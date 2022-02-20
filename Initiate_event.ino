@@ -69,20 +69,29 @@
    }
   }
     
-  void Initiate_hum_event()
+  void Initiate_hum_event()                         //NB! Humidifier is only turned on, when fan is on
   {
     Display_Initiate_hum_event_serial();
     Display_hum_status_serial();
     switch(HumSet)
     {
-     case 1: Motor_on_hum(); break;
+     case 1: 
+         {
+          if (FanStatus == 1) {Motor_on_hum();}     //NB! Humidifier is only turned on, when fan is on
+          else {Motor_off_hum();}
+          break;
+         }
      case 2: Motor_off_hum(); break;
      case 0: 
-    {
-     if (Hum >= HumHighLimit) {Motor_off_hum();}
-     if (Hum <= HumLowLimit)  {Motor_on_hum();}
-     break;
-    } 
+         {
+          if (Hum >= HumHighLimit) {Motor_off_hum();}
+          if (Hum <= HumLowLimit)
+          {
+           if (FanStatus == 1) {Motor_on_hum();}    //NB! Humidifier is only turned on, when fan is on
+           else {Motor_off_hum();}
+          }
+          break;
+         } 
      default: break;
     }
   }
