@@ -10,6 +10,7 @@
          case 4: return Lines_menu4;
          case 5: return Lines_menu5;
          case 6: return Lines_menu6;
+         case 7: return Lines_menu6;
          return 8;
        }
      }
@@ -40,6 +41,17 @@
    
       int Input_read_keypad()
       {
+        // For HW-555        
+        if (KeyValue > 800) return NONE;   //For HW-555: > 800, for DF Robot: > 1000
+        if (KeyValue < 60)   return RIGHT;  //For HW-555: < 60, for DF Robot: < 10. 
+        if (KeyValue < 200)  return UP;     //For HW-555: < 200, for DF Robot: < 130.
+        if (KeyValue < 400)  return DOWN;   //For HW-555: < 400, for DF Robot: < 280.
+        if (KeyValue < 600)  return LEFT;   //For HW-555: < 600, for DF Robot: < 450.
+        if (KeyValue < 800)  return SELECT; //For HW-555: < 800, for DF Robot: < 690.  
+        return NONE;// when all others fail, return this...
+
+        //For DF Robot
+        /*
         if (KeyValue > 1000) return NONE;
         if (KeyValue < 10)   return RIGHT;  
         if (KeyValue < 130)  return UP; 
@@ -47,6 +59,7 @@
         if (KeyValue < 450)  return LEFT; 
         if (KeyValue < 690)  return SELECT;   
         return NONE;// when all others fail, return this...
+        */
       }  
 
   //  Navigate - update position and cursor - returns updated Pos variable
@@ -145,7 +158,8 @@
        //ACTIONS MENU       
        case 22:  TempSet = Adjust_mode(TempSet, x); break;
        case 23:  HumSet = Adjust_mode(HumSet, x); break;
-       case 24:  FanSet = Adjust_mode(FanSet, x); break;          
+       case 24:  FanSet = Adjust_mode(FanSet, x); break;
+       case 25:  LightSet = Adjust_mode(LightSet, x); break;         
        
        //TEMPERATURE MENU       
        case 42:  TempSet = Adjust_mode(TempSet, x); break;
@@ -153,12 +167,12 @@
        case 44:  TempHighLimit = (float)TempHighLimit + (float)x/20.00f; break;
        case 45:  TempLowLimit = (float)TempLowLimit + (float)x/20.00f; break;                    
        case 46:  
-                 TempDuration_minute = minute(Adjust_time(TempDuration_minute, TempDuration_second, x));
-                 TempDuration_second = second(Adjust_time(TempDuration_minute, TempDuration_second, x));
+                 TempDuration_minute = minute(Adjust_time_ms(TempDuration_minute, TempDuration_second, x));
+                 TempDuration_second = second(Adjust_time_ms(TempDuration_minute, TempDuration_second, x));
                  break;
        case 47:  
-                 TempInterval_minute = minute(Adjust_time(TempInterval_minute, TempInterval_second, x));
-                 TempInterval_second = second(Adjust_time(TempInterval_minute, TempInterval_second, x));
+                 TempInterval_minute = minute(Adjust_time_ms(TempInterval_minute, TempInterval_second, x));
+                 TempInterval_second = second(Adjust_time_ms(TempInterval_minute, TempInterval_second, x));
                  break;
                  
        //HUMIDITY MENU
@@ -169,19 +183,31 @@
        //FAN MENU
        case 62:  FanSet = Adjust_mode(FanSet, x); break;
        case 63:  
-                 FanDuration_minute = minute(Adjust_time(FanDuration_minute, FanDuration_second, x));
-                 FanDuration_second = second(Adjust_time(FanDuration_minute, FanDuration_second, x));
+                 FanDuration_minute = minute(Adjust_time_ms(FanDuration_minute, FanDuration_second, x));
+                 FanDuration_second = second(Adjust_time_ms(FanDuration_minute, FanDuration_second, x));
                  break;
        case 64:  
-                 FanInterval_minute = minute(Adjust_time(FanInterval_minute, FanInterval_second, x));
-                 FanInterval_second = second(Adjust_time(FanInterval_minute, FanInterval_second, x));
+                 FanInterval_minute = minute(Adjust_time_ms(FanInterval_minute, FanInterval_second, x));
+                 FanInterval_second = second(Adjust_time_ms(FanInterval_minute, FanInterval_second, x));
                  break;
+
+       
+        //LIGHT MENU
+        case 72:  LightSet = Adjust_mode(LightSet, x); break;
+        case 73:  
+                  LightDuration_hour = hour(Adjust_time_hm(LightDuration_hour, LightDuration_minute, x));
+                  LightDuration_minute = minute(Adjust_time_hm(LightDuration_hour, LightDuration_minute, x));
+                  break;
+        case 74:  
+                  LightInterval_hour = hour(Adjust_time_hm(LightInterval_hour, LightInterval_minute, x));
+                  LightInterval_minute = minute(Adjust_time_hm(LightInterval_hour, LightInterval_minute, x));
+                  break;
       }
       if (Cur == 1) {--Pos;}
      }
 
-//  Utility function: Calculate time_t for specific time (hour and minutes)
-    time_t Adjust_time(byte Minute, byte Second, int AddedValue)
+//  Utility function: Calculate time_t for specific time (minute and second)
+    time_t Adjust_time_ms(byte Minute, byte Second, int AddedValue)
     {
      time_t AdjustedMinuteSecond_t;
      TimeElements tm;
@@ -193,6 +219,21 @@
      tm.Year = 2020-1970;
      AdjustedMinuteSecond_t = makeTime(tm) + AddedValue;
      return AdjustedMinuteSecond_t;
+    }
+
+//  Utility function: Calculate time_t for specific time (hour and minute)
+    time_t Adjust_time_hm(byte Hour, byte Minute, int AddedValue)
+    {
+     time_t AdjustedHourMinute_t;
+     TimeElements tm;
+     tm.Hour = Hour;
+     tm.Minute = Minute;
+     tm.Second = 1;
+     tm.Day = 1;
+     tm.Month = 1;
+     tm.Year = 2020-1970;
+     AdjustedHourMinute_t = makeTime(tm) + AddedValue;
+     return AdjustedHourMinute_t;
     }
 
 //  Utility function to adjust mode

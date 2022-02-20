@@ -27,6 +27,12 @@
           EEPROM.put(FanDuration_second_address, FanDuration_second_preset);
           EEPROM.put(FanInterval_minute_address, FanInterval_minute_preset);
           EEPROM.put(FanInterval_second_address, FanInterval_second_preset);
+
+          EEPROM.put(LightSet_address, LightSet_preset);
+          EEPROM.put(LightDuration_hour_address, LightDuration_hour_preset);
+          EEPROM.put(LightDuration_minute_address, LightDuration_minute_preset);
+          EEPROM.put(LightInterval_hour_address, LightInterval_hour_preset);
+          EEPROM.put(LightInterval_minute_address, LightInterval_minute_preset);
         }
         
         if (Eeprom_status == 2)  
@@ -49,5 +55,11 @@
           EEPROM.put(FanDuration_second_address, FanDuration_second);
           EEPROM.put(FanInterval_minute_address, FanInterval_minute);
           EEPROM.put(FanInterval_second_address, FanInterval_second);
+
+          EEPROM.put(LightSet_address, LightSet);
+          EEPROM.put(LightDuration_hour_address, LightDuration_hour);
+          EEPROM.put(LightDuration_minute_address, LightDuration_minute);
+          EEPROM.put(LightInterval_hour_address, LightInterval_hour);
+          EEPROM.put(LightInterval_minute_address, LightInterval_minute);
         }
       }

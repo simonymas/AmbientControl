@@ -45,3 +45,19 @@
       digitalWrite(Relay_3,HIGH);
       FanStatus = 0;
     }
+
+//TURNING LIGHT ON AND OFF
+
+    void Motor_on_light()
+    {
+      Display_Motor_on_light_serial();
+      digitalWrite(Relay_4,LOW);
+      LightStatus = 1;
+     }
+
+    void Motor_off_light()
+    {
+      Display_Motor_off_light_serial();
+      digitalWrite(Relay_4,HIGH);
+      LightStatus = 0;
+    }

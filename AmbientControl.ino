@@ -1,7 +1,7 @@
 /******************************************************************
- Created - 15.03.2021
+ Created - 20.02.2022
  
- Project    : AMBIENT CONTROL PROGRAM - mushroomambient
+ Project    : AMBIENT CONTROL PROGRAM - AmbientControl
  
  Libraries  : Wire.h //Included in Arduino IDE folder hardware/libraries/Wire
               TimeLib.h http://swfltek.com/arduino/timelord_library_deprecated.pdf
@@ -16,7 +16,7 @@
  This program is designes to control relays on the basis of temperature and humidity inputs, timers and manual inputs from a keypad. Its features includes:
  * Timekeeping and setting timers
  * Measurering temperature and humidty
- * Control of 3 relays on the basis of temperature and humidity measure and timers
+ * Control of 4 relays on the basis of temperature and humidity measure and timers
  * Keypad and display for manual control and for changeing settings.
  In this version, the program is designed to manage a mushroom incobation chamber or grow room with automatic heating by thermostat and air exchange/humidifying from timer.
  
@@ -29,19 +29,23 @@
  
  HARDWARE:  
  *  Arduino Uno
-        I/O pins max.20mA for longer periods, 40mA for shorter
-        Power output 5V pins max. 400 mA
- *  Relay-module - 3 Realys in this version
+        Power: 7-12V (recommended), approx. 100 mA consumption
+        I/O pins max. 20mA for longer periods, 40mA for shorter
+        Power output from 5V pins max. 400 mA
+ *  Relay-module - 4 Realys in this version
         Power: 5V, ~75-90 mA each when active - must be powered from seperate supply
-        Pins: A2-4, GND, 5V VCC-JD jumper off -  GND on arduino on pin side - seperate GND and power supply to VCC-JD from external power supply
- *  LCD Keypad Shield, DF Robot
+        Pins: D2, D3, A2, A3, 5V (VCC-JD jumper off - VCC from arduino on pin side - seperate GND and power supply to VCC-JD from external power supply
+ *  LCD Keypad Shield, DF Robot or HW-555 - NB! Change values in function "Input_keypad" according to the type of keypad shield
         Power: 5V, ~80mA with full backlight
         Pins: LCD D4-10, Keypad A0
         Library: LiquidCrystal.h
- *  Temperature and sensor SHT20
-        Power: 3.3V, ~3mA
+ *  Temperature and humidity sensor SHT20 
+        Power: 3.3V, < 1 mA
         Pins: Connect to SCL and SDA on Arduino and supplied from 3.3 V outlet and GND on Arduino
         Library: DFRobot_SHT20.h
+ *  Power supply:
+        LM2596 DC-DC step down 4-30V to supply vin pin with 12V and/or seperately relays with 5v, 2,5A
+        WX-DC12003 to convert 220V to 5V+/-0,15V, 700mA to supply relays (NB! Not stable enough to supply arduino 5v pin)
 
 ******************************************************************/
 
@@ -69,13 +73,18 @@
       #define KeyPad_IN A0
   
   //  Relay
-      #define Relay_1 A2 //Heater
-      #define Relay_2 A3 //Humidifier
-      #define Relay_3 A4 //Fan
+      #define Relay_1 2 //Heater
+      #define Relay_2 3 //Humidifier
+      #define Relay_3 A2 //Fan
+      #define Relay_4 A3 //Light
                    
   //  LCD 1602
       LiquidCrystal LCD( 8, 9, 4, 5, 6, 7); //LCD pins set by syntax LiquidCrystal [Name](RS,E,D4,D5,D6,D7)
-      #define DisplayLight_OUT 10 //Light intensity on display - usend in Setup_LCD()
+      #define DisplayLight_OUT 10 //Light intensity on display - used in Setup_LCD()
+
+  //  Temperature and humidity sensor SHT20 uses I2C
+      //SCL - pin A4 occupied
+      //SDA - pin A5 occupied
 
 //DISTRIBUTION OF EEPROM ADRESSES
 
@@ -98,6 +107,12 @@
       #define FanInterval_minute_address   12
       #define FanInterval_second_address   13
 
+      #define LightSet_address             14
+      #define LightDuration_hour_address   15
+      #define LightDuration_minute_address 16
+      #define LightInterval_hour_address   17
+      #define LightInterval_minute_address 18
+
       #define TempGoal_address             20
       #define TempHighLimit_address        30
       #define TempLowLimit_address         40
@@ -106,7 +121,7 @@
     
   //  Activate debugging messages in serial screen - set to true to debug (Warning: if all is activated, dynamic memory will overload)
 
-      const bool SerialDebugSetup = true;
+      const bool SerialDebugSetup = false;
       const bool SerialDebugDisplay = true;
       const bool SerialDebugControls = true;
       const bool SerialDebugStatus = false;
@@ -140,31 +155,41 @@
       #define FanInterval_minute_preset  10
       #define FanInterval_second_preset   0
 
+      #define LightSet_preset             0 // Values: 1 = Fan always on, 0 = Fan switched on automatically, 2 = Fan disabled
+      #define LightDuration_hour_preset  12
+      #define LightDuration_minute_preset 0
+      #define LightInterval_hour_preset  12
+      #define LightInterval_minute_preset 0
+
   //  Intensity of backgrund light on reset - set a number between 0 and 255
-      const int DisplayLightIntensity = 170;
+      const int DisplayLightIntensity = 30;
 
   //  KeyPad and display fuctions
       int SensitivityKeypad = 500; //  Set sensitivity of buttons on keypad in miliseconds - don't exceed 500 not to trigger Watchdog reset
       int MenuReset = 45; // Seconds before menu exits, so loop can continue. If value is too high, system will reset.
 
   //  Menu structure
-      #define MenuMax     6  // Number of menues
+      #define MenuMax     7  // Number of menues
       
       #define Lines_menu1 2  // Number of lines in each menu
-      #define Lines_menu2 5
-      #define Lines_menu3 5
+      #define Lines_menu2 6
+      #define Lines_menu3 6
       #define Lines_menu4 8
       #define Lines_menu5 5
       #define Lines_menu6 5
+      #define Lines_menu7 5
 
 //DECLARATION OF SOME ADDITIONAL GLOBAL VARIABLES USED BY THE FUNCTIONS - don't cahnge!
   
   //  Calculated in Initiate_event()   
+      time_t TempOn_t = now();
+      time_t TempOff_t = now();
+      
       time_t FanOn_t = now();
       time_t FanOff_t = now();
 
-      time_t TempOn_t = now();
-      time_t TempOff_t = now();
+      time_t LightOn_t = now();
+      time_t LightOff_t = now();
       
   //  Calcultated in Input_keypad();
       time_t Adjusted_time;
@@ -190,6 +215,12 @@
       byte FanDuration_second = EEPROM.read(FanDuration_second_address);
       byte FanInterval_minute = EEPROM.read(FanInterval_minute_address);
       byte FanInterval_second = EEPROM.read(FanInterval_second_address);
+
+      byte LightSet = EEPROM.read(LightSet_address);
+      byte LightDuration_hour = EEPROM.read(LightDuration_hour_address);
+      byte LightDuration_minute = EEPROM.read(LightDuration_minute_address);
+      byte LightInterval_hour = EEPROM.read(LightInterval_hour_address);
+      byte LightInterval_minute = EEPROM.read(LightInterval_minute_address);
      
   //  Used in Input_keypad and Display_menu functions
       int KeyStatus = 0;
@@ -206,9 +237,7 @@
       byte TempStatus = 0; //Values: 
       byte HumStatus = 0; //Values: 
       byte FanStatus = 0; //Values: 0 = Off; 1 = On;
-      
-      byte DoorActualPosition = 0; //Values: 0 = Unkonown; 1 = Open; 2 = Closed;
-      byte NestActualPosition = 0; //Values: 0 = Unkonown; 1 = Open; 2 = Closed;
+      byte LightStatus = 0; //Values: 0 = Off; 1 = On;
       
   //  For temperature and humidity sensor
       float Temp = 0;

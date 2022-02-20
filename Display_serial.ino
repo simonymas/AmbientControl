@@ -65,6 +65,9 @@
       void Display_Initiate_fan_event_serial()
       {if (SerialDebugControls){Serial.println();Serial.print("Initiate_fan_event()");}}
 
+      void Display_Initiate_light_event_serial()
+      {if (SerialDebugControls){Serial.println();Serial.print("Initiate_light_event()");}}
+      
       void Display_Motor_on_hum_serial()
       {if (SerialDebugControls){Serial.println();Serial.print("Motor_on_hum()");}}
       
@@ -82,6 +85,12 @@
       
       void Display_Motor_off_temp_serial()
       {if (SerialDebugControls){Serial.println();Serial.print("Motor_off_temp()");}}
+
+      void Display_Motor_on_light_serial()
+      {if (SerialDebugControls){Serial.println();Serial.print("Motor_on_light()");}}
+      
+      void Display_Motor_off_light_serial()
+      {if (SerialDebugControls){Serial.println();Serial.print("Motor_off_light()");}}
  
   //  Timers debug functions
   
@@ -129,27 +138,33 @@
             
   //  Status debug functions
    
-      //  Status of light
+      //  Status of temperature
       void Display_temp_status_serial() {if (SerialDebugStatus)
       {
         Serial.print ("Heater status: ");
         Serial.println (TempStatus);
       }}     
 
-      //  Status of door
+      //  Status of humidity
       void Display_hum_status_serial() {if (SerialDebugStatus)
       {
         Serial.print ("Humidifier status: ");
         Serial.println (HumStatus);
       }}
       
-      //  Status of nest
+      //  Status of fan
       void Display_fan_status_serial() {if (SerialDebugStatus)
       {
         Serial.print ("Fan status: ");
         Serial.println (FanStatus);
       }}
-      
+
+      //  Status of light
+      void Display_light_status_serial() {if (SerialDebugStatus)
+      {
+        Serial.print ("Light status: ");
+        Serial.println (LightStatus);
+      }}
   //  Utility function to add "0" if number is smaller than 10
       void SerialprintDigits(int digits)
       {

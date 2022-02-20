@@ -25,14 +25,16 @@
           case 22: LCD.setCursor(0,Line);LCD.print(" Varme:     ");Display_mode_status(TempSet);break;
           case 23: LCD.setCursor(0,Line);LCD.print(" Fugter:    ");Display_mode_status(HumSet);break;
           case 24: LCD.setCursor(0,Line);LCD.print(" Bl");LCD.print(char(1));LCD.print("ser:    ");Display_mode_status(FanSet);break;
-          case 25: LCD.setCursor(0,Line);LCD.print(" EXIT MENU      ");break;
+          case 25: LCD.setCursor(0,Line);LCD.print(" Lys:       ");Display_mode_status(LightSet);break;
+          case 26: LCD.setCursor(0,Line);LCD.print(" EXIT MENU      ");break;
 
           //Menu 3 lines - STATUS MENU
           case 31: LCD.setCursor(0,Line);LCD.print("STATUS          ");break;
           case 32: LCD.setCursor(0,Line);LCD.print(" Varme ");Display_motor_status(TempStatus);LCD.setCursor(14,Line);LCD.print("  "); break;
           case 33: LCD.setCursor(0,Line);LCD.print(" Fugter ");Display_motor_status(HumStatus);LCD.setCursor(15,Line);LCD.print(" ");break;
-          case 34: LCD.setCursor(0,Line);LCD.print(" Bl");LCD.print(char(1));LCD.print("ser ");LCD.setCursor(15,Line);LCD.print(" "); break;
-          case 35: LCD.setCursor(0,Line);LCD.print(" EXIT MENU      ");break;
+          case 34: LCD.setCursor(0,Line);LCD.print(" Bl");LCD.print(char(1));LCD.print("ser ");Display_motor_status(FanStatus);LCD.setCursor(15,Line);LCD.print(" "); break;
+          case 35: LCD.setCursor(0,Line);LCD.print(" Lys ");Display_motor_status(LightStatus);LCD.setCursor(12,Line);LCD.print("    ");break;
+          case 36: LCD.setCursor(0,Line);LCD.print(" EXIT MENU      ");break;
 
           //Menu 4 lines - TEMPERATURE MENU
           case 41: LCD.setCursor(0,Line);LCD.print("INDSTIL VARME   ");break;
@@ -57,6 +59,13 @@
           case 63: LCD.setCursor(0,Line);LCD.print(" Varighed: ");LCDprintDigits(FanDuration_minute);LCD.print(":"); LCDprintDigits(FanDuration_second); break;
           case 64: LCD.setCursor(0,Line);LCD.print(" Interval: ");LCDprintDigits(FanInterval_minute);LCD.print(":"); LCDprintDigits(FanInterval_second); break;
           case 65: LCD.setCursor(0,Line);LCD.print(" EXIT MENU      ");break;
+
+          //Menu 7 lines - LIGHT MENU
+          case 71: LCD.setCursor(0,Line);LCD.print("INDSTIL LYS     ");break;
+          case 72: LCD.setCursor(0,Line);LCD.print(" Mode:      ");Display_mode_status(LightSet);break;
+          case 73: LCD.setCursor(0,Line);LCD.print(" Varighed: ");LCDprintDigits(LightDuration_hour);LCD.print(":"); LCDprintDigits(LightDuration_minute); break;
+          case 74: LCD.setCursor(0,Line);LCD.print(" Interval: ");LCDprintDigits(LightInterval_hour);LCD.print(":"); LCDprintDigits(LightInterval_minute); break;
+          case 75: LCD.setCursor(0,Line);LCD.print(" EXIT MENU      ");break;
         }
       }
  
@@ -88,11 +97,11 @@
       void Display_humtemp()
       { 
         LCD.setCursor(0,Line);
-        LCDprintDigits(Hum);
+        LCDprintDigits((float)Hum);
         if (Hum>99) {LCD.setCursor(3,Line);}
         else {LCD.setCursor(2,Line);}
         LCD.print("%RH     ");
-        LCD.print(Temp);
+        LCD.print((float)Temp);
         LCD.setCursor(14,Line);
         LCD.print(char(223));
         LCD.print("C");

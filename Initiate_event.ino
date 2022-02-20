@@ -5,6 +5,7 @@
     Initiate_temp_event();
     Initiate_hum_event();
     Initiate_fan_event();
+    Initiate_light_event();
   }
   
   void Initiate_temp_event()
@@ -111,6 +112,38 @@
            case 1:
            {
             if (FanOff_t < now()) {Motor_off_fan();break;}
+            else {break;}
+           }
+          }
+         }
+    }
+   } 
+
+   void Initiate_light_event()
+  {
+    Display_Initiate_light_event_serial();
+    Display_light_status_serial();
+    switch(LightSet)
+    {
+     case 1: Motor_on_light(); break;
+     case 2: Motor_off_light(); break;
+     case 0: 
+         { 
+          switch(LightStatus)
+          {
+           case 0:
+           {
+            if (LightOn_t < now())
+            {
+              LightOff_t=Time_t(hour()+LightDuration_hour, minute()+LightDuration_minute, second());
+              LightOn_t=Time_t(hour(LightOff_t)+LightInterval_hour, minute(LightOff_t)+LightInterval_minute, second(LightOff_t));
+              Motor_on_light();
+              break;
+            }
+           }
+           case 1:
+           {
+            if (LightOff_t < now()) {Motor_off_light();break;}
             else {break;}
            }
           }

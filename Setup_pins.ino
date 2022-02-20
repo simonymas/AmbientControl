@@ -4,7 +4,8 @@
     //Set up input and output pins
       pinMode(Relay_1, OUTPUT);
       pinMode(Relay_2, OUTPUT); 
-      pinMode(Relay_3, OUTPUT); 
+      pinMode(Relay_3, OUTPUT);
+      pinMode(Relay_4, OUTPUT);  
       
       pinMode(DisplayLight_OUT, OUTPUT);
       
@@ -12,6 +13,7 @@
       digitalWrite(Relay_1, HIGH);
       digitalWrite(Relay_2, HIGH);
       digitalWrite(Relay_3, HIGH);
+      digitalWrite(Relay_4, HIGH);
       
       Display_Setup_pins_serial();
 }
