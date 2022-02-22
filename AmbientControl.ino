@@ -4,7 +4,7 @@
  Project    : AMBIENT CONTROL PROGRAM - AmbientControl
  
  Libraries  : Wire.h //Included in Arduino IDE folder hardware/libraries/Wire
-              TimeLib.h http://swfltek.com/arduino/timelord_library_deprecated.pdf
+              TimeLib.h
               LiquidCrystal.h Included in Arduino IDE folder
               DFRobot_SHT20.h https://github.com/DFRobot/DFRobot_SHT20
               EEPROM.h Included in Arduino IDE folder
@@ -16,16 +16,18 @@
  This program is designes to control relays on the basis of temperature and humidity inputs, timers and manual inputs from a keypad. Its features includes:
  * Timekeeping and setting timers
  * Measurering temperature and humidty
- * Control of 4 relays on the basis of temperature and humidity measure and timers
+ * Control of 4 relays on the basis of temperature and humidity measure and timers.
  * Keypad and display for manual control and for changeing settings.
  In this version, the program is designed to manage a mushroom incobation chamber or grow room with automatic heating by thermostat and air exchange/humidifying from timer.
  
  USER INPUTS (SETTINGS IN CODE):
  * Default timer parameters and delays - force save to eeprom on installation, see notice in code (Setup-routine)
- * Serial debug - set to true or false
+ * Serial debug - set to true or false.
+ * Treshholds for keypad shield buttons (Input_keypad tab).
     
  SUGGESTED IMPROVEMENTS:
- * Option to restore settings to preset values from keypad
+ * Automatical saving to eeprom on first setup.
+ * Option to restore settings to preset values from keypad.
  
  HARDWARE:  
  *  Arduino Uno
@@ -247,9 +249,6 @@
   //  From Setup_reset functions
       time_t ResetTime_t;
       time_t MenuReset_t;
-
-  //  Variable to determine, if DST is set. Values: 1 = DST is activated, 0 = Normal time is activated - always set to 0 at startup
-      byte DST = 0;
 
 //SETUP ROUTINE - runs only once    
 void setup()

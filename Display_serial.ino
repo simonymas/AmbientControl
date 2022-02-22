@@ -91,50 +91,6 @@
       
       void Display_Motor_off_light_serial()
       {if (SerialDebugControls){Serial.println();Serial.print("Motor_off_light()");}}
- 
-  //  Timers debug functions
-  
-      //Time and date
-      void Display_time_serial()
-      {if (SerialDebugStatus)
-      {
-      Serial.println();
-      Serial.print("Now: ");
-      Serial.print(day());
-      Serial.print(".");
-      switch(month())
-      {
-       case 1: Serial.print(" jan.");break;
-       case 2: Serial.print(" febr.");break;
-        case 3: Serial.print(" marts");break;
-        case 4: Serial.print(" april");break;
-        case 5: Serial.print(" maj");break;
-        case 6: Serial.print(" juni");break;
-        case 7: Serial.print(" juli");break;
-        case 8: Serial.print(" aug.");break;
-        case 9: Serial.print(" sept.");break;
-        case 10: Serial.print(" okt.");break;
-        case 11: Serial.print(" nov.");break;
-        case 12: Serial.print(" dec.");break;
-        default: Serial.print(" Fejl!");break;
-       }
-       Serial.print(" ");
-       Serial.print(year());
-       Serial.print(" ");
-       SerialprintDigits(hour());
-       Serial.print(":");
-       SerialprintDigits(minute());
-       if (DST == 1)
-       {
-        Serial.print(" (DST)");
-       }
-       if (DST == 0)
-       {
-       Serial.print(" (not DST)");
-       }
-       Serial.println();
-       }
-      }
             
   //  Status debug functions
    
