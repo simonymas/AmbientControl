@@ -1,5 +1,5 @@
 /******************************************************************
- Created - 22.02.2022
+ Created - 7.1.2023
  
  Project    : AMBIENT CONTROL PROGRAM - AmbientControl
  
@@ -19,6 +19,9 @@
  * Control of 4 relays on the basis of temperature and humidity measure and timers.
  * Keypad and display for manual control and for changeing settings.
  In this version, the program is designed to manage a mushroom incobation chamber or grow room with automatic heating by thermostat and air exchange/humidifying from timer.
+ 
+ VERSION NOTES;
+ OBS! In this version, the fan on auto mode is set to turn on, whenever the humidifier is on.
  
  USER INPUTS (SETTINGS IN CODE):
  * Default timer parameters and delays - force save to eeprom on installation, see notice in code (Setup-routine)

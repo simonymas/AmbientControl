@@ -49,8 +49,8 @@
           //Menu 5 lines - HUMIDITY MENU
           case 51: LCD.setCursor(0,Line);LCD.print("INDSTIL FUGT    ");break;
           case 52: LCD.setCursor(0,Line);LCD.print(" Mode:      ");Display_mode_status(HumSet);break;
-          case 53: LCD.setCursor(0,Line);LCD.print(" Max hum.:   ");LCD.print(HumHighLimit);LCD.setCursor(15,Line);LCD.print("%");break;
-          case 54: LCD.setCursor(0,Line);LCD.print(" Min hum.:   ");LCD.print(HumLowLimit);LCD.setCursor(15,Line);LCD.print("%");break;
+          case 53: LCD.setCursor(0,Line);LCD.print(" Max hum.:  ");LCDprintNumber(HumHighLimit);LCD.setCursor(15,Line);LCD.print("%");break;
+          case 54: LCD.setCursor(0,Line);LCD.print(" Min hum.:  ");LCDprintNumber(HumLowLimit);LCD.setCursor(15,Line);LCD.print("%");break;
           case 55: LCD.setCursor(0,Line);LCD.print(" EXIT MENU      ");break;
 
           //Menu 6 lines - FAN MENU
@@ -200,4 +200,11 @@
        LCD.print('0');
        LCD.print(digits);
       }
-  
+
+      //Utility function to add extra space, if number is smaller than 100
+      void LCDprintNumber(int number)
+      {
+       if(number < 100)
+       LCD.print(' ');
+       LCD.print(number);
+      }
